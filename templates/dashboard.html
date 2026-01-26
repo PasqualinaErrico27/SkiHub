@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="wrap">
+    <div class="board">
+        <!-- Titoli colonne (come mockup) -->
+        <div class="board-head">
+            <div class="col-title">Comprensori che gestisci</div>
+            <div class="col-title">Impianti</div>
+            <div class="col-title">Piste</div>
+        </div>
+
+        <div class="board-body">
+            <!-- COL 1: Resorts -->
+            <section class="col">
+                <div class="list">
+                    {% for r in resorts %}
+                        <div class="item">
+                            <div class="meta">
+                                <div class="name">{{ r.name }}</div>
+                                <div class="sub">{{ r.region }}{% if r.country %} – {{ r.country }}{% endif %}</div>
+                            </div>
+                            <div class="actions">
+                                <!-- Seleziona / vai ai dettagli admin del resort -->
+                                <a class="icon-btn" title="Gestisci" href="{{ url_for('admin.resort_detail', resort_id=r.id) }}">↗</a>
+                                <a class="icon-btn" title="Modifica" href="{{ url_for('admin.edit_resort', resort_id=r.id) }}">✎</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="hint">Nessun comprensorio presente. Creane uno.</div>
+                    {% endfor %}
+                </div>
+
+                <div class="bottom-bar">
+                    <a class="btn" href="{{ url_for('admin.new_resort') }}">Aggiungi comprensorio</a>
+                </div>
+            </section>
+
+            <!-- COL 2: Lifts -->
+            <section class="col">
+                <div class="list">
+                    {% if selected_resort %}
+                        {% for l in selected_resort.lifts %}
+                            <div class="item">
+                                <div class="meta">
+                                    <div class="name">{{ l.name }}</div>
+                                    <div class="sub">{{ l.type or "Tipo non specificato" }}</div>
+                                </div>
+                                <div class="actions">
+                                    <a class="icon-btn" title="Modifica" href="{{ url_for('admin.edit_lift', lift_id=l.id) }}">✎</a>
+                                    <a class="icon-btn" title="Elimina" href="{{ url_for('admin.delete_lift', lift_id=l.id, resort_id=selected_resort.id) }}">🗑</a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="hint">Seleziona un comprensorio e aggiungi impianti.</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="hint">Seleziona un comprensorio per vedere gli impianti.</div>
+                    {% endif %}
+                </div>
+
+                <div class="bottom-bar">
+                    {% if selected_resort %}
+                        <a class="btn" href="{{ url_for('admin.add_lift', resort_id=selected_resort.id) }}">Aggiungi impianti</a>
+                    {% else %}
+                        <a class="btn" href="#" onclick="return false;" style="opacity:.6; cursor:not-allowed;">Aggiungi impianti</a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- COL 3: Slopes -->
+            <section class="col">
+                <div class="list">
+                    {% if selected_resort %}
+                        {% for s in selected_resort.slopes %}
+                            <div class="item">
+                                <div class="meta">
+                                    <div class="name">{{ s.name }}</div>
+                                    <div class="sub">{{ s.difficulty }}{% if s.length_km %} • {{ s.length_km }} km{% endif %}</div>
+                                </div>
+                                <div class="actions">
+                                    <a class="icon-btn" title="Modifica" href="{{ url_for('admin.edit_slope', slope_id=s.id) }}">✎</a>
+                                    <a class="icon-btn" title="Elimina" href="{{ url_for('admin.delete_slope', slope_id=s.id, resort_id=selected_resort.id) }}">🗑</a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="hint">Seleziona un comprensorio e aggiungi piste.</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="hint">Seleziona un comprensorio per vedere le piste.</div>
+                    {% endif %}
+                </div>
+
+                <div class="bottom-bar">
+                    {% if selected_resort %}
+                        <a class="btn" href="{{ url_for('admin.new_slope', resort_id=selected_resort.id) }}">Aggiungi piste</a>
+                    {% else %}
+                        <a class="btn" href="#" onclick="return false;" style="opacity:.6; cursor:not-allowed;">Aggiungi piste</a>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Ricerca Comprensori{% endblock %}
+
+{% block content %}
+<h2>Ricerca Comprensori Sciistici</h2>
+
+<div class="search-box">
+    <input type="text" id="searchName" placeholder="Nome comprensorio">
+    <select id="searchRegion">
+        <option value="">Tutte le regioni</option>
+        <option value="Trentino">Trentino</option>
+        <option value="Lombardia">Lombardia</option>
+        <option value="Valle d'Aosta">Valle d'Aosta</option>
+    </select>
+    <button onclick="searchResorts()">Cerca</button>
+</div>
+
+<div id="results" class="results-grid"></div>
+
+<script>
+function searchResorts() {
+    // MOCK frontend (per ora)
+    const results = [
+        {name: "Madonna di Campiglio", region: "Trentino"},
+        {name: "Livigno", region: "Lombardia"},
+        {name: "Cervinia", region: "Valle d'Aosta"}
+    ];
+
+    const container = document.getElementById("results");
+    container.innerHTML = "";
+
+    results.forEach(r => {
+        container.innerHTML +=
+           ` <div class="resort-card">
+                <h3>${r.name}</h3>
+                <p>${r.region}</p>
+                <button onclick="saveResort('${r.name}', '${r.region}')">Salva</button>
+            </div>
+        `;
+    });
+}
+
+function saveResort(name, region) {
+    fetch("/resort/save", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, region})
+    })
+    .then(r => r.json())
+    .then(d => alert(d.success ? "Salvato!" : "Errore"));
+}
+</script>
+{% endblock %}

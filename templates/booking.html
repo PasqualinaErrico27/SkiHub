@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Prenotazione{% endblock %}
+
+{% block content %}
+<div class="booking-box">
+
+    <h2>Prenota skipass</h2>
+    <p class="subtitle">{{ resort.name }} – {{ resort.region }}</p>
+
+    <form method="POST" class="booking-form">
+
+        <label>Giorni</label>
+        <label>
+            <select name="days" required>
+                <option value="1">1 giorno</option>
+                <option value="2">2 giorni</option>
+                <option value="3">3 giorni</option>
+                <option value="5">5 giorni</option>
+            </select>
+        </label>
+
+        <label>Prezzo (€)</label>
+        <input type="number" name="price" value="50" readonly>
+
+        <button type="submit">Conferma prenotazione</button>
+    </form>
+
+</div>
+{% endblock %}

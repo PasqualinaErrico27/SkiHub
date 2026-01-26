@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}SkiHub{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>Filtri</h2>
+
+        <div class="filter-group">
+            <label for="searchName">Nome</label>
+            <input type="text" id="searchName" placeholder="Comprensorio">
+        </div>
+
+        <div class="filter-group">
+            <label for="searchRegion">Regione</label>
+            <select id="searchRegion">
+                <option value="">Tutte</option>
+                <option value="Trentino">Trentino</option>
+                <option value="Lombardia">Lombardia</option>
+                <option value="Valle d'Aosta">Valle d'Aosta</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="minAltitude">Altitudine minima</label>
+            <input type="number" id="minAltitude">
+        </div>
+
+        <button onclick="searchResorts()">Cerca</button>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <div class="resort-grid">
+            {% for resort in resorts %}
+                <a href="{{ url_for('resort.resort_detail', resort_id=resort.id) }}">
+                <div class="resort-card">
+                    <h3>{{ resort.name }}</h3>
+                    <p>📍 {{ resort.region }} – {{ resort.country }}</p>
+                    <p>⛰ {{ resort.altitude_min }} – {{ resort.altitude_max }} m</p>
+                    <p>🚡 {{ resort.lifts|length }} impianti</p>
+                    <p>🎿 {{ resort.slopes|length }} piste</p>
+                </div>
+                </a>
+            {% else %}
+                <div class="no-results">Nessun comprensorio trovato</div>
+            {% endfor %}
+        </div>
+    </main>
+
+</div>
+
+<script>
+    function searchResorts() {
+        const params = new URLSearchParams();
+
+        const name = document.getElementById("searchName").value;
+        const region = document.getElementById("searchRegion").value;
+        const minAltitude = document.getElementById("minAltitude").value;
+
+        if (name) params.append("name", name);
+        if (region) params.append("region", region);
+        if (minAltitude) params.append("min_altitude", minAltitude);
+
+        window.location.href = "/?" + params.toString();
+    }
+</script>
+{% endblock %}
