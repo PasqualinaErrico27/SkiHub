@@ -23,8 +23,6 @@ def login():
     session["user_id"] = user.id
     session["username"] = user.username
 
-    print("LOGIN ROLE:", user.role)
-
     return jsonify({"success": True}), 200
 
 @login_bp.route("/logout")

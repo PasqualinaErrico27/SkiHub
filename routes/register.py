@@ -41,7 +41,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        print("USER CREATED:", user.username)
         return jsonify({"success": True}), 200
 
     except Exception as e:

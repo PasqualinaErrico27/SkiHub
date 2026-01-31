@@ -11,7 +11,6 @@
     <button onclick="openTab('resorts')">Comprensori salvati</button>
 </div>
 
-<!-- TAB ANAGRAFICA -->
 <div id="info" class="tab-content active">
     <label for="firstname"></label><input id="firstname" value="{{ user.first_name }}">
     <label for="lastname"></label><input id="lastname" value="{{ user.last_name }}">
@@ -20,12 +19,11 @@
     <a href="{{ url_for('login.logout') }}">Logout</a>
 </div>
 
-<!-- TAB ACQUISTI -->
 <div id="purchases" class="tab-content">
     {% if purchases %}
         <ul>
         {% for p in purchases %}
-            <li>{{ p.item }} – €{{ p.amount }} – {{ p.date.strftime('%d/%m/%Y') }}</li>
+            <li>{{ p.resort_id }} – €{{ p.amount }} – Dal{{ p.datefrom.strftime('%d/%m/%Y') }} Al {{ p.dateto.strftime('%d/%m/%Y') }}</li>
         {% endfor %}
         </ul>
     {% else %}
@@ -33,7 +31,6 @@
     {% endif %}
 </div>
 
-<!-- TAB RESORT SALVATI -->
 <div id="resorts" class="tab-content">
     {% if saved_resorts %}
         <ul>

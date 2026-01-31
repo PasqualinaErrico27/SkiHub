@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, Blueprint, request
 from dbModels.SavedResort import SavedResort
-from dbModels.PurchaseHistory import Purchase
+from dbModels.Purchase import Purchase
+from dbModels.Slope import Slope
 from dbModels.db import db
 from dbModels.User import User
 
@@ -13,8 +14,9 @@ def profile():
 
     user = User.query.get(session["user_id"])
 
+
     if user.role == "admin":
-        return render_template("dashboard.html", user=user)
+        return redirect(url_for("admin.dashboard"))
 
     if not user:
         session.clear()

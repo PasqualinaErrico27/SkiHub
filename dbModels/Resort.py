@@ -10,6 +10,8 @@ class Resort(db.Model):
     region = db.Column(db.String(100), nullable=False)
     altitude_min = db.Column(db.Integer)
     altitude_max = db.Column(db.Integer)
+    price = db.Column(db.Double, nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # relazioni
     lifts = db.relationship(Lift, backref="resort", lazy=True, cascade="all, delete")

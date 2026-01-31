@@ -22,7 +22,7 @@ def admin_required(f):
         if 'user_id' not in session:
             return redirect(url_for('login.login'))
         user = User.query.get(session['user_id'])
-        if user != 'admin' or not user:
+        if user.role != 'admin' or not user:
             abort(403)
         return f(*args, **kwargs)
     return decorated_function

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 from dbModels.Resort import Resort
 
 resort_bp = Blueprint("resort", __name__)

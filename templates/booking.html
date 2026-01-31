@@ -9,21 +9,33 @@
 
     <form method="POST" class="booking-form">
 
-        <label>Giorni</label>
-        <label>
-            <select name="days" required>
-                <option value="1">1 giorno</option>
-                <option value="2">2 giorni</option>
-                <option value="3">3 giorni</option>
-                <option value="5">5 giorni</option>
-            </select>
-        </label>
+        <label for="dayfrom">Dal </label><input id = "dayfrom" name = "datefrom" type="date">
+        <label for="dayto">Al </label><input id = "dayto" name="dateto" type="date">
+        <label for = "count">Per quante persone?</label><input id = "count" name = "count" type="number" value = "1" min ="1" oninput="updatePrice()">
 
-        <label>Prezzo (€)</label>
-        <input type="number" name="price" value="50" readonly>
+         <div class="price-box">
+        Totale: <strong>€ <span id="price">0</span></strong>
+        </div>
+
+        <input type="hidden" name="amount" id="amount" >
 
         <button type="submit">Conferma prenotazione</button>
     </form>
 
 </div>
+    <script>
+    const pricePerPerson = {{ resort.price }};
+
+    function updatePrice() {
+        const count = document.querySelector('input[name="count"]').value;
+        const total = pricePerPerson * count;
+
+        document.getElementById("price").innerText = total.toFixed(2);
+        document.getElementById("amount").value = total.toFixed(2);
+    }
+
+    // calcolo iniziale
+    updatePrice();
+</script>
+
 {% endblock %}
