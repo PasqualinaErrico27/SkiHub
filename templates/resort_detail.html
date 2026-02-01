@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ resort.name }}{% endblock %}
+
+{% block content %}
+<div class="resort-detail">
+
+    <!-- HERO -->
+    <section class="resort-hero">
+        <div class="hero-text">
+            <h2>{{ resort.name }}</h2>
+            <p>📍 {{ resort.region }}{% if resort.country %} – {{ resort.country }}{% endif %}</p>
+            <p>⛰ {{ resort.altitude_min }} – {{ resort.altitude_max }} m</p>
+        </div>
+
+        <a class="btn-primary"
+           href="{{ url_for('booking.new_booking', resort_id=resort.id) }}">
+            Prenota skipass
+        </a>
+    </section>
+
+    <!-- INFO GRID -->
+    <section class="info-grid">
+
+        <div class="info-card">
+            <h3>🚡 Impianti</h3>
+            {% if resort.lifts %}
+                <ul>
+                    {% for lift in resort.lifts %}
+                        <li>
+                            <strong>{{ lift.name }}</strong>
+                            <span>{{ lift.type or "Impianto" }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="hint">Nessun impianto disponibile</p>
+            {% endif %}
+        </div>
+
+        <div class="info-card">
+            <h3>🎿 Piste</h3>
+            {% if resort.slopes %}
+                <ul>
+                    {% for slope in resort.slopes %}
+                        <li>
+                            <strong>{{ slope.name }}</strong>
+                            <span>
+                                {{ slope.difficulty }}
+                                {% if slope.length_km %} • {{ slope.length_km }} km{% endif %}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="hint">Nessuna pista disponibile</p>
+            {% endif %}
+        </div>
+
+    </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Prenotazione{% endblock %}
+
+{% block content %}
+<div class="booking-box">
+
+    <h2>Prenota skipass</h2>
+    <p class="subtitle">{{ resort.name }} – {{ resort.region }}</p>
+
+    <form method="POST" class="booking-form">
+
+        <label for="dayfrom">Dal </label><input id = "dayfrom" name = "datefrom" type="date" required>
+        <label for="dayto">Al </label><input id = "dayto" name="dateto" type="date" required>
+        <label for = "count">Per quante persone?</label><input id = "count" name = "count" type="number" value = "1" min ="1" oninput="updatePrice()" required>
+
+         <div class="price-box">
+        Totale: <strong>€ <span id="price">0</span></strong>
+        </div>
+
+        <input type="hidden" name="amount" id="amount" >
+
+        <button type="submit">Conferma prenotazione</button>
+    </form>
+
+</div>
+    <script>
+    const pricePerPerson = {{ resort.price }};
+
+    function updatePrice() {
+        const count = document.querySelector('input[name="count"]').value;
+        const total = pricePerPerson * count;
+
+        document.getElementById("price").innerText = total.toFixed(2);
+        document.getElementById("amount").value = total.toFixed(2);
+    }
+
+    // calcolo iniziale
+    updatePrice();
+</script>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from dbModels.db import db
 from dbModels.Resort import Resort
 from dbModels.Slope import Slope
@@ -15,12 +15,9 @@ def dashboard():
     return render_template("dashboard.html",resorts=resorts)
 
 
-@admin_bp.route('/resort/new', methods=['GET', 'POST'])
+@admin_bp.route('/resort/new', methods=['POST'])
 @admin_required
 def new_resort():
-    if request.method == "GET":
-        return render_template("resort_form.html")
-
     data = request.get_json()
 
     resort = Resort(
@@ -47,20 +44,20 @@ def edit_resort(resort_id):
     resort = Resort.query.get_or_404(resort_id)
 
     if request.method == "POST":
-        resort.name = request.form["name"]
-        resort.region = request.form["region"]
+
+        resort.name = resort.name
+        resort.region = resort.region
         resort.altitude_min = request.form["altitude_min"]
         resort.altitude_max = request.form["altitude_max"]
-
         db.session.commit()
+
         return redirect(url_for("admin.dashboard"))
 
     return render_template("resort_edit.html", resort=resort)
 
-@admin_bp.route("/resort/<int:resort_id>/lifts", methods=["GET","POST"])
+@admin_bp.route("/resort/<int:resort_id>/lifts", methods=["POST"])
 @admin_required
 def add_lift(resort_id):
-    if request.method == "POST":
         lift = Lift(
         name=request.form["name"],
         type=request.form["type"],
@@ -70,12 +67,10 @@ def add_lift(resort_id):
         db.session.add(lift)
         db.session.commit()
         return redirect(url_for("admin.edit_resort", resort_id=resort_id))
-    return render_template("new_lift.html",resort_id=resort_id)
 
-@admin_bp.route("/resort/<int:resort_id>/slopes", methods=["GET", "POST"])
+@admin_bp.route("/resort/<int:resort_id>/slopes", methods=["POST"])
 @admin_required
 def add_slope(resort_id):
-    if request.method == "POST":
         slope = Slope(
             name=request.form["name"],
             difficulty=request.form["difficulty"],
@@ -86,4 +81,21 @@ def add_slope(resort_id):
         db.session.commit()
         return redirect(url_for("admin.edit_resort", resort_id=resort_id))
 
-    return render_template("new_slope.html", resort_id=resort_id)
+
+@admin_bp.route("/resort/<int:resort_id>/slope/<int:slope_id>", methods=["POST"])
+@admin_required
+def delete_slope(resort_id,slope_id):
+    slope = Slope.query.get_or_404(slope_id)
+
+    db.session.delete(slope)
+    db.session.commit()
+    return redirect(url_for("admin.edit_resort", resort_id=resort_id))
+
+@admin_bp.route("/resort/<int:resort_id>/lift/<int:lift_id>", methods=["POST"])
+@admin_required
+def delete_lift(resort_id, lift_id):
+    lift = Lift.query.get_or_404(lift_id)
+    db.session.delete(lift)
+    db.session.commit()
+
+    return redirect(url_for("admin.edit_resort", resort_id=resort_id))

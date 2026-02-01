@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestione comprensori{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h2>Gestione</h2>
+
+            <button class="btn-primary full" onclick="toggleModal('modal-resort')">
+                Aggiungi Comprensorio
+            </button>
+
+            <hr>
+
+            <div class="filter-group">
+                <label for="searchName">Nome</label>
+                <input type="text" id="searchName" placeholder="Comprensorio">
+            </div>
+
+            <div class="filter-group">
+                <label for="region">Regione</label>
+                <select name="region" id="region" required>
+                    <option value="">Seleziona una regione</option>
+
+                    <option value="Abruzzo">Abruzzo</option>
+                    <option value="Basilicata">Basilicata</option>
+                    <option value="Calabria">Calabria</option>
+                    <option value="Campania">Campania</option>
+                    <option value="Emilia-Romagna">Emilia-Romagna</option>
+                    <option value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</option>
+                    <option value="Lazio">Lazio</option>
+                    <option value="Liguria">Liguria</option>
+                    <option value="Lombardia">Lombardia</option>
+                    <option value="Marche">Marche</option>
+                    <option value="Molise">Molise</option>
+                    <option value="Piemonte">Piemonte</option>
+                    <option value="Puglia">Puglia</option>
+                    <option value="Sardegna">Sardegna</option>
+                    <option value="Sicilia">Sicilia</option>
+                    <option value="Toscana">Toscana</option>
+                    <option value="Trentino-Alto Adige">Trentino-Alto Adige</option>
+                    <option value="Umbria">Umbria</option>
+                    <option value="Valle d'Aosta">Valle d'Aosta</option>
+                    <option value="Veneto">Veneto</option>
+                </select>
+            </div>
+            <button onclick="searchResorts()">Cerca</button>
+            <a href="{{ url_for('login.logout') }}">Logout</a>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+            <div class="resort-grid">
+                {% for resort in resorts %}
+                    <a class="btn-secondary" href="{{ url_for('admin.edit_resort', resort_id=resort.id) }}">
+                    <div class="resort-card admin-card">
+                        <h3>{{ resort.name }}</h3>
+                        <p>📍 {{ resort.region }} – {{ resort.country }}</p>
+                        <p>⛰ {{ resort.altitude_min }} – {{ resort.altitude_max }} m</p>
+                        <p>🚡 {{ resort.lifts|length }} impianti</p>
+                        <p>🎿 {{ resort.slopes|length }} piste</p>
+                    </div>
+                    </a>
+                {% else %}
+                    <div class="no-results">Nessun comprensorio inserito</div>
+                {% endfor %}
+
+            </div>
+        </main>
+
+    </div>
+
+    <div id="modal-resort" class="modal hidden" onclick="closeOnOutside(event, 'modal-resort')">
+    <div class="modal-content">
+        <h3>➕ Aggiungi comprensorio</h3>
+
+        <form id="add-resort-form">
+            <input id="nome" placeholder="Nome comprensorio" required>
+
+            <select id="region" required>
+                <option value="">Regione</option>
+                 <option value="Abruzzo">Abruzzo</option>
+            <option value="Basilicata">Basilicata</option>
+            <option value="Calabria">Calabria</option>
+            <option value="Campania">Campania</option>
+            <option value="Emilia-Romagna">Emilia-Romagna</option>
+            <option value="Friuli-Venezia Giulia">Friuli-Venezia Giulia</option>
+            <option value="Lazio">Lazio</option>
+            <option value="Liguria">Liguria</option>
+            <option value="Lombardia">Lombardia</option>
+            <option value="Marche">Marche</option>
+            <option value="Molise">Molise</option>
+            <option value="Piemonte">Piemonte</option>
+            <option value="Puglia">Puglia</option>
+            <option value="Sardegna">Sardegna</option>
+            <option value="Sicilia">Sicilia</option>
+            <option value="Toscana">Toscana</option>
+            <option value="Trentino-Alto Adige">Trentino-Alto Adige</option>
+            <option value="Umbria">Umbria</option>
+            <option value="Valle d'Aosta">Valle d'Aosta</option>
+            <option value="Veneto">Veneto</option>
+            </select>
+
+            <input id="min-altitude" name="min-altitude" type="number" placeholder="Altitudine minima" min="1" required>
+            <input id="max-altitude" name="max-altitude"type="number" placeholder="Altitudine massima" min="1" required>
+            <input id="price" type="number" placeholder="Prezzo (€)" min="1" required>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Salva</button>
+                <button type="button" onclick="toggleModal('modal-resort')">Annulla</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+function toggleModal(id) {
+    document.getElementById(id).classList.toggle("hidden");
+}
+
+function closeOnOutside(event, id) {
+    if (event.target.id === id) {
+        toggleModal(id);
+    }
+}
+
+document.getElementById("add-resort-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const min = Number(document.getElementById("min-altitude").value);
+    const max = Number(document.getElementById("max-altitude").value);
+
+    if (max < min) {
+        alert("L'altitudine massima non può essere inferiore a quella minima!");
+        return;
+    }
+    fetch("/admin/resort/new", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            nome: document.getElementById("nome").value,
+            region: document.getElementById("region").value,
+            min: document.getElementById("min-altitude").value,
+            max: document.getElementById("max-altitude").value,
+            price: document.getElementById("price").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Registrazione{% endblock %}
+
+{% block content %}
+<h2>Registrati</h2>
+
+<div id="registerSection"><h1></h1>
+    <label for="username"></label><input type="text" id="username" placeholder="Username"><br>
+    <label for="email"></label><input type="email" id="email" placeholder="Email"><br>
+    <label for="firstName"></label><input type="text" id="firstName" placeholder="First Name"><br>
+    <label for="lastName"></label><input type="text" id="lastName" placeholder="Last Name"><br>
+    <label for="dateOfBirth"></label><input type="date" id="dateOfBirth" placeholder="Date of Birth"><br>
+    <label for="password"></label><input type="password" id="password" placeholder="Password"><br>
+    <label for="confirmPassword"></label><input type="password" id="confirmPassword" placeholder="Confirm Password"><br>
+    <button id="registerBtn">Registrati</button>
+</div>
+
+<script>
+    document.getElementById("registerBtn").addEventListener("click", () => {
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if(password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
+        fetch("/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({"username": document.getElementById("username").value,
+                "email": document.getElementById("email").value,
+                "password": document.getElementById("password").value,
+                "firstname": document.getElementById("firstName").value,
+                "lastname": document.getElementById("lastName").value,
+                "dateOfBirth": document.getElementById("dateOfBirth").value})
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "/";
+                }
+            });
+    })
+
+</script>
+{% endblock %}

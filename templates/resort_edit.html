@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}Modifica {{ resort.name }}{% endblock %}
+
+{% block content %}
+
+    <script>
+        function checkAltitudes(form) {
+            const min = Number(form.altitude_min.value);
+            const max = Number(form.altitude_max.value);
+
+            if (!min || !max) return true;
+
+            if (max < min) {
+                alert("L'altitudine massima non può essere inferiore a quella minima!");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+    {# ===================== MACRO ===================== #}
+
+    {% macro modal(id, title, action, body) %}
+        <div id="{{ id }}" class="modal hidden" onclick="closeOnOutside(event, '{{ id }}')">
+            <div class="modal-content">
+                <h3>{{ title }}</h3>
+
+                <form method="POST" action="{{ action }}">
+                    {{ body | safe }}
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Salva</button>
+                        <button type="button" onclick="toggleModal('{{ id }}')">
+                            Annulla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endmacro %}
+
+
+    {% macro slope_card(slope, symbols) %}
+        <div class="slope_card">
+            <strong>{{ slope.name }}</strong>
+            <p>
+                {{ symbols.get(slope.difficulty|lower, '❓') }}
+                {% if slope.length_km %} • {{ slope.length_km }} km{% endif %}
+            </p>
+            <form method="POST"
+                  action="{{ url_for('admin.delete_slope',
+                             resort_id=resort.id,
+                             slope_id=slope.id  ) }}"
+                  onsubmit="return confirm('Eliminare impianto?')">
+                <button class="danger">🗑</button>
+            </form>
+        </div>
+    {% endmacro %}
+
+    {% macro lift_card(lift, resort) %}
+        <div class="lift-card">
+            <strong>{{ lift.name }}</strong>
+
+            <form method="POST"
+                  action="{{ url_for('admin.delete_lift',
+                             resort_id=resort.id,
+                             lift_id=lift.id) }}"
+                  onsubmit="return confirm('Eliminare impianto?')">
+                <button class="danger">🗑</button>
+            </form>
+        </div>
+    {% endmacro %}
+    {# ===================== COMPRENSORIO ===================== #}
+
+    <section class="edit-resort">
+        <h2>Modifica comprensorio</h2>
+
+        <form method="POST"
+            action="{{ url_for('admin.edit_resort', resort_id=resort.id) }}"
+            onsubmit="return checkAltitudes(this)">
+
+            <div class="form-group">
+                <label for="price">Prezzo (€)</label>
+                <input type="number" step="0.01" name="price" id="price"
+                       value="{{ resort.price }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="alt_min">Altitudine minima</label>
+                <input type="number" name="altitude_min" id="alt_min"
+                       value="{{ resort.altitude_min }}">
+            </div>
+
+            <div class="form-group">
+                <label for="alt_max">Altitudine massima</label>
+                <input type="number" name="altitude_max" id="alt_max"
+                       value="{{ resort.altitude_max }}">
+            </div>
+
+            <button type="submit" class="btn-primary">Salva</button>
+        </form>
+    </section>
+
+    {# ===================== PISTE ===================== #}
+
+    {% set symbols = {
+    'blu': '🔵',
+    'rossa': '🔴',
+    'nera': '⚫'
+} %}
+
+    <section class="slopes">
+        <div class="section-header">
+            <h3>Piste</h3>
+            <button class="btn-small" onclick="toggleModal('modal-slope')">
+                ➕ Aggiungi pista
+            </button>
+        </div>
+
+        {% for slope in resort.slopes %}
+            {{ slope_card(slope, symbols) }}
+        {% else %}
+            <p class="hint">Nessuna pista inserita</p>
+        {% endfor %}
+    </section>
+
+    {# ===================== IMPIANTI ===================== #}
+
+    <section class="lifts">
+        <div class="section-header">
+            <h3>Impianti</h3>
+            <button class="btn-small" onclick="toggleModal('modal-lift')">
+                ➕ Aggiungi impianto
+            </button>
+        </div>
+
+        {% for lift in resort.lifts %}
+            {{ lift_card(lift, resort) }}
+        {% else %}
+            <p class="hint">Nessun impianto inserito</p>
+        {% endfor %}
+
+    </section>
+
+    {# ===================== MODALI ===================== #}
+
+    {{ modal(
+    'modal-slope',
+    '➕ Aggiungi pista a ' ~ resort.name,
+    url_for('admin.add_slope', resort_id=resort.id),
+    '
+    <input name="name" placeholder="Nome pista" required>
+    <select name="difficulty" required>
+        <option value="">Difficoltà</option>
+        <option value="blu">Blu</option>
+        <option value="rossa">Rossa</option>
+        <option value="nera">Nera</option>
+    </select>
+    <input type="number" step="0.1" name="length_km" placeholder="Lunghezza (km)">
+    '
+) }}
+
+    {{ modal(
+    'modal-lift',
+    '➕ Aggiungi impianto a ' ~ resort.name,
+    url_for('admin.add_lift', resort_id=resort.id),
+    '
+    <input name="name" placeholder="Nome impianto" required>
+    <select name="type" required>
+        <option value="">Tipo Impianto</option>
+        <option value="Seggiovia">Seggiovia</option>
+        <option value="Ovovia">Ovovia</option>
+        <option value="Funivia">Funivia</option>
+        <option value="Skilift">Skilift</option>
+    </select>
+    <input type="number" name="capacity" placeholder="Capacità pers/h" min = "1">
+    '
+) }}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            window.toggleModal = function(id) {
+                const modal = document.getElementById(id);
+                if (!modal) return;
+                modal.classList.toggle("hidden");
+            };
+
+            window.closeOnOutside = function(event, id) {
+                if (event.target.id === id) {
+                    toggleModal(id);
+                }
+            };
+            console.log(document.getElementById("modal-slope"));
+        });
+    </script>
+
+{% endblock %}
