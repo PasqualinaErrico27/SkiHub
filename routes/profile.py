@@ -1,9 +1,9 @@
 from flask import session, redirect, url_for, render_template, Blueprint, request
-from dbModels.SavedResort import SavedResort
+from werkzeug.security import generate_password_hash
+
 from dbModels.Purchase import Purchase
-from dbModels.Slope import Slope
-from dbModels.db import db
 from dbModels.User import User
+from dbModels.db import db
 
 profile_bp = Blueprint("profile", __name__)
 
@@ -22,26 +22,29 @@ def profile():
         session.clear()
         return redirect(url_for("login.login"))
     purchases = Purchase.query.filter_by(user_id=user.id).all()
-    saved_resorts = SavedResort.query.filter_by(user_id=user.id).all()
-
     return render_template(
         "profile.html",
         user=user,
-        purchases=purchases,
-        saved_resorts=saved_resorts
+        purchases=purchases
     )
 
-@profile_bp.route("/save",methods=["POST"])
-def save():
-    if "user_id" not in session:
-        return {"success": False}, 401
-    data = request.get_json()
+@profile_bp.route("/profile/delete_booking/<int:purchase_id>", methods=["POST"])
+def delete(purchase_id):
+    purchase = Purchase.query.get_or_404(purchase_id)
+    db.session.delete(purchase)
+    db.session.commit()
+    return redirect(url_for("profile.profile"))
 
-    try:
-        saved = SavedResort(user_id=session["user_id"],name = data["name"],region = data["region"])
-        db.session.add(saved)
-        db.session.commit()
-    except Exception as e:
-        print(e)
-        return {"success": False}, 500
-    return {"success": True}
+@profile_bp.route("/profile/changepwd", methods=["POST"])
+def changepwd():
+    user_id = session["user_id"]
+    user = User.query.get(user_id)
+    password = request.form["password"]
+    print(password)
+    hashed_password = generate_password_hash(
+        password,
+        method="pbkdf2:sha256",
+        salt_length=16
+    )
+    user.password = hashed_password
+    return render_template("profile.html", user=user)
