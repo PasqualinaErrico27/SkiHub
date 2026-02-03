@@ -13,6 +13,7 @@ Technologies used in the project:
 
 Prerequisites:
 
+- MySQL Community Server (8.0 or higher)
 - Python 3.11.9 or higher
 - Flask 3.1.2 or higher
 - Git
@@ -20,3 +21,4 @@ Prerequisites:
 
 
 How to open web app:
+
