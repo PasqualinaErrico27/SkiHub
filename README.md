@@ -21,4 +21,11 @@ Prerequisites:
 
 
 How to open web app:
-
+1) Install the required version of Python, Flask, and MySQL
+2) Create a new database from the MySQL Command Line Client called skihub: "create database skihub;"
+3) Clone this git repository and open the terminal in the folder where 'skihub.sql' exists
+4) Assuming the command mysql is in the environment variables for your system, use the following command where 'user' and password can be found in the .env file
+5) mysql -u 'user' -p skihub < backup.sql
+6) If you dont have PyCharm open the terminal where app.py exists and run python3 app.py and skip to the next step(Assuming the command python is in the environment variables for your system)
+7) If you have PyCharm installed, open the project folder and run app.py after selecting the correct interpreter
+8) If successful you should get the access url, click it and enjoy!
