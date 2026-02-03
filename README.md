@@ -7,7 +7,7 @@ SkiHub - Participants:
 Technologies used in the project:
 
 - Frontend: HTML, CSS, JavaScript, Jinja2 (Flask)
-- Backend: Python Flask framework
+- Backend: Python Flask Framework
 - Database: MySQL Relational Database
 - Environment Variables: dotenv
 
@@ -29,3 +29,4 @@ How to open web app:
 6) If you dont have PyCharm open the terminal where app.py exists and run python3 app.py and skip to the next step(Assuming the command python is in the environment variables for your system)
 7) If you have PyCharm installed, open the project folder and run app.py after selecting the correct interpreter
 8) If successful you should get the access url, click it and enjoy!
+
