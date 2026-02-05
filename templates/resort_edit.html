@@ -76,8 +76,8 @@
         <h2>Modifica comprensorio</h2>
 
         <form method="POST"
-            action="{{ url_for('admin.edit_resort', resort_id=resort.id) }}"
-            onsubmit="return checkAltitudes(this)">
+              action="{{ url_for('admin.edit_resort', resort_id=resort.id) }}"
+              onsubmit="return checkAltitudes(this)">
 
             <div class="form-group">
                 <label for="price">Prezzo (€)</label>
@@ -102,46 +102,47 @@
     </section>
 
     {# ===================== PISTE ===================== #}
-
-    {% set symbols = {
+    <div class="edit-divider"></div>
+    <div class="edit-sections">
+        {% set symbols = {
     'blu': '🔵',
     'rossa': '🔴',
     'nera': '⚫'
 } %}
 
-    <section class="slopes">
-        <div class="section-header">
-            <h3>Piste</h3>
-            <button class="btn-small" onclick="toggleModal('modal-slope')">
-                ➕ Aggiungi pista
-            </button>
-        </div>
+        <section class="slopes">
+            <div class="section-header">
+                <h3>Piste</h3>
+                <button class="btn-small" onclick="toggleModal('modal-slope')">
+                    ➕ Aggiungi pista
+                </button>
+            </div>
 
-        {% for slope in resort.slopes %}
-            {{ slope_card(slope, symbols) }}
-        {% else %}
-            <p class="hint">Nessuna pista inserita</p>
-        {% endfor %}
+            {% for slope in resort.slopes %}
+                {{ slope_card(slope, symbols) }}
+            {% else %}
+                <p class="hint">Nessuna pista inserita</p>
+            {% endfor %}
+        </section>
+
+        {# ===================== IMPIANTI ===================== #}
+
+        <section class="lifts">
+            <div class="section-header">
+                <h3>Impianti</h3>
+                <button class="btn-small" onclick="toggleModal('modal-lift')">
+                    ➕ Aggiungi impianto
+                </button>
+            </div>
+
+            {% for lift in resort.lifts %}
+                {{ lift_card(lift, resort) }}
+            {% else %}
+                <p class="hint">Nessun impianto inserito</p>
+            {% endfor %}
+
     </section>
-
-    {# ===================== IMPIANTI ===================== #}
-
-    <section class="lifts">
-        <div class="section-header">
-            <h3>Impianti</h3>
-            <button class="btn-small" onclick="toggleModal('modal-lift')">
-                ➕ Aggiungi impianto
-            </button>
-        </div>
-
-        {% for lift in resort.lifts %}
-            {{ lift_card(lift, resort) }}
-        {% else %}
-            <p class="hint">Nessun impianto inserito</p>
-        {% endfor %}
-
-    </section>
-
+ </div>
     {# ===================== MODALI ===================== #}
 
     {{ modal(
