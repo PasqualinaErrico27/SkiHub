@@ -1,146 +1,125 @@
 {% extends "base.html" %}
 {% block title %}Profilo{% endblock %}
-
 {% block content %}
-
     {% macro tab_button(id, label, active=False) %}
-        <button class="tab-btn {{ 'active' if active }}" data-tab="{{ id }}">
-            {{ label }}
-        </button>
+        <button class="tab-btn {{ 'active' if active }}" data-tab="{{ id }}"> {{ label }} </button>
     {% endmacro %}
-
-
     <section class="profile">
-
         <h2>Profilo utente</h2>
-
-        <nav class="tabs">
-            {{ tab_button('info', '👤 Anagrafica', True) }}
+        <nav class="tabs">{{ tab_button('purchases', '🧾 Prenotazioni',True) }}
+            {{ tab_button('info', '👤 Anagrafica') }}
             {{ tab_button('password', '🔐 Password') }}
-            {{ tab_button('purchases', '🧾 Prenotazioni') }}
         </nav>
 
+        <section id="info" class="tab-content">
+            <form id="profile-form" class="profile-form">
 
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input id="username" value="{{ user.username }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" value="{{ user.email }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="firstname">Nome</label>
+                    <input id="firstname" value="{{ user.first_name }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="lastname">Cognome</label>
+                    <input id="lastname" value="{{ user.last_name }}">
+                </div>
+
+                <button class="btn-primary">Salva</button>
+                <p id="profile-msg" class="form-msg"></p>
+            </form>
+        </section>
         <section id="password" class="tab-content">
             <form id="password-form" class="profile-form">
-
-                <div class="form-group">
-                    <label for="old_password">Password attuale</label>
-                    <input id="old_password" type="password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="new_password">Nuova password</label>
-                    <input id="new_password" type="password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirm_password">Conferma password</label>
-                    <input id="confirm_password" type="password" required>
-                </div>
-
-                <button class="btn-primary" id="confirm">Aggiorna password</button>
-
+                <div>
+                    <label for="old_password">Vecchia Password<br><input id="old_password" name="old_password" type="password" required></label></div>
+                <div>
+                    <label for="new_password">Nuova Password<br><input id="new_password" name="new_password" type="password" required></label></div>
+                <label for="confirm_password">Conferma Password<br><input id="confirm_password" type="password" required></label>
+                <div>
+                    <button class="btn-primary">Aggiorna password</button></div>
                 <p id="password-msg" class="form-msg"></p>
             </form>
         </section>
-
-
-        <section id="purchases" class="tab-content">
-
-            {% if purchases %}
-                <ul class="booking-list">
-                    {% for p in purchases %}
-                        <li class="booking-card">
-                            <div>
-                                <strong>{{ p.resort_id.name }}</strong><br>
-                                {{ p.datefrom.strftime('%d/%m/%Y') }}
-                                →
-                                {{ p.dateto.strftime('%d/%m/%Y') }}
-                            </div>
-
-                            <div class="booking-actions">
-                                <span>€{{ p.amount }}</span>
-
-                                <form method="POST"
-                                      action="{{ url_for('profile.delete', purchase_id=p.id) }}"
-                                      onsubmit="return confirm('Annullare la prenotazione?')">
-                                    <button class="danger">❌</button>
-                                </form>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+        <section id="purchases" class="tab-content active">
+            {% if purchases %} <ul class="booking-list">
+                {% for p in purchases %}
+                    <li class="booking-card">
+                        <div>
+                            <strong>{{ p.resort_id.name }}</strong>
+                            <br> {{ p.datefrom.strftime('%d/%m/%Y') }} → {{ p.dateto.strftime('%d/%m/%Y') }}
+                        </div>
+                        <div class="booking-actions"> <span>€{{ p.amount }}</span>
+                            <form method="POST" action="{{ url_for('profile.delete', purchase_id=p.id) }}" onsubmit="return confirm('Annullare la prenotazione?')">
+                                <button class="danger">❌</button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
             {% else %}
                 <p class="hint">Nessuna prenotazione effettuata</p>
             {% endif %}
-
         </section>
-        <a href="{{ url_for('login.logout') }}">Logout</a>
     </section>
+    <script> /* ---------- CHANGE PASSWORD ---------- */
+    document.getElementById("password-form").addEventListener("submit", e => {
+        e.preventDefault();
 
-    <script>
-        /* ---------- CHANGE PASSWORD ---------- */
-        document.getElementById("confirm").addEventListener('click', function(e) {
-            e.preventDefault();
+        const oldPwd = document.getElementById("old_password").value;
+        const newPwd = document.getElementById("new_password").value;
+        const confirm = document.getElementById("confirm_password").value;
+        const msg = document.getElementById("password-msg");
 
-            fetch("{{ url_for('profile.changepwd') }}", { // Aggiunte virgolette per Jinja2
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    password: document.getElementById("new_password").value
-                })
-            }) // <--- La parentesi del fetch deve chiudersi QUI
-                .then(r => r.json())
-                .then(d => {
-                    const msg = document.getElementById("profile-msg");
-                    msg.textContent = d.success ? "Password modificata con successo" : d.error;
-                    msg.className = d.success ? "form-msg success" : "form-msg error";
-                })
-                .catch(() => {
-                    document.getElementById("profile-msg").textContent = "Errore di connessione";
-                });
-        });
+        if (newPwd !== confirm) {
+            msg.textContent = "Le password non coincidono";
+            return;
+        }
 
-        /* ---------- TAB NAVIGATION (Pulita e singola) ---------- */
-        document.querySelectorAll(".tab-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                // Rimuovi active da tutti i bottoni e contenuti
-                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-                document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-
-                // Aggiungi active a quello cliccato
-                btn.classList.add("active");
-                const targetTab = document.getElementById(btn.dataset.tab);
-                if (targetTab) {
-                    targetTab.classList.add("active");
-                }
-            });
-        });
-
-        /* ---------- PROFILE UPDATE ---------- */
-        document.getElementById("profile-form").addEventListener("submit", e => {
-            e.preventDefault();
-
-            fetch("/profile/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    firstname: document.getElementById("firstname").value,
-                    lastname: document.getElementById("lastname").value,
-                    email: document.getElementById("email").value
-                })
+        fetch("{{ url_for('profile.changepwd') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                old_password: oldPwd,
+                new_password: newPwd
             })
-                .then(r => r.json())
-                .then(d => {
-                    const msg = document.getElementById("profile-msg");
-                    msg.textContent = d.success ? "Profilo aggiornato con successo" : d.error;
-                    msg.className = d.success ? "form-msg success" : "form-msg error";
-                })
-                .catch(() => {
-                    document.getElementById("profile-msg").textContent = "Errore di connessione";
-                });
-        });
-    </script>
+        })
+            .then(r => r.json())
+            .then(d => {
+                msg.textContent = d.success
+                    ? "Password aggiornata con successo"
+                    : d.error;
+            });
+    });
 
+    /* ---------- TAB NAVIGATION---------- */
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+            btn.classList.add("active");
+            const targetTab = document.getElementById(btn.dataset.tab);
+            if (targetTab) { targetTab.classList.add("active"); } }); });
+    /* ---------- PROFILE UPDATE ---------- */
+    document.getElementById("profile-form").addEventListener("submit", e => {
+        e.preventDefault();
+        fetch("/profile/update", {
+            method: "POST", headers: {
+                "Content-Type": "application/json" },
+            body: JSON.stringify({ firstname: document.getElementById("firstname").value,
+                lastname: document.getElementById("lastname").value, email: document.getElementById("email").value }) })
+            .then(r => r.json())
+            .then(d => { const msg = document.getElementById("profile-msg");
+                msg.textContent = d.success ? "Profilo aggiornato con successo" : d.error; msg.className = d.success ? "form-msg success" : "form-msg error"; })
+            .catch(() => { document.getElementById("profile-msg").textContent = "Errore di connessione"; }); });
+    </script>
 {% endblock %}

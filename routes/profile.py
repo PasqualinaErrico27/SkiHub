@@ -1,5 +1,5 @@
-from flask import session, redirect, url_for, render_template, Blueprint, request
-from werkzeug.security import generate_password_hash
+from flask import session, redirect, url_for, render_template, Blueprint, request, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from dbModels.Purchase import Purchase
 from dbModels.User import User
@@ -13,10 +13,6 @@ def profile():
         return redirect(url_for("login.login"))
 
     user = User.query.get(session["user_id"])
-
-
-    if user.role == "admin":
-        return redirect(url_for("admin.dashboard"))
 
     if not user:
         session.clear()
@@ -36,15 +32,39 @@ def delete(purchase_id):
     return redirect(url_for("profile.profile"))
 
 @profile_bp.route("/profile/changepwd", methods=["POST"])
+@profile_bp.route("/profile/changepwd", methods=["POST"])
 def changepwd():
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
-    password = request.form["password"]
-    print(password)
-    hashed_password = generate_password_hash(
-        password,
-        method="pbkdf2:sha256",
-        salt_length=16
-    )
-    user.password = hashed_password
-    return render_template("profile.html", user=user)
+    if "user_id" not in session:
+        return jsonify(error="Non autenticato"), 401
+
+    data = request.get_json() or {}
+    old = data.get("old_password")
+    new = data.get("new_password")
+
+    if not old or not new:
+        return jsonify(error="Dati mancanti"), 400
+
+    user = User.query.get(session["user_id"])
+
+    if not check_password_hash(user.password, old):
+        return jsonify(error="Password attuale errata")
+
+    user.password = generate_password_hash(new)
+    db.session.commit()
+
+    return jsonify(success=True)
+
+@profile_bp.route("/profile/update", methods=["POST"])
+def update_profile():
+    if "user_id" not in session:
+        return jsonify(error="Non autenticato"), 401
+
+    data = request.get_json()
+    user = User.query.get(session["user_id"])
+
+    user.first_name = data["firstname"]
+    user.last_name = data["lastname"]
+    user.email = data["email"]
+
+    db.session.commit()
+    return jsonify(success=True)

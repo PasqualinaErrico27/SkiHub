@@ -39,6 +39,8 @@ body {
 
 /* ===== HEADER ===== */
 header {
+    position: relative;
+    z-index: 9999;
     height: 72px;
     display: flex;
     align-items: center;
@@ -180,24 +182,6 @@ header h1,
     font-weight: 600;
     opacity: 0.8;
 }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-    .resort-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    .resort-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* ===== ADMIN DASHBOARD ===== */
 
 .admin-board {
@@ -451,6 +435,88 @@ header h1,
     padding: .4rem .6rem;
     border-radius: 6px;
     cursor: pointer;
+}
+/* ================= HEADER ================= */
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .8rem 1.5rem;
+    background: #0f172a;
+    color: white;
+}
+
+.logo a {
+    color: white;
+    text-decoration: none;
+}
+
+/* ================= DROPDOWN ================= */
+
+.profile-menu {
+    position: relative;
+}
+
+.profile-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: white;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background: white;
+    color: #111;
+    border-radius: 10px;
+    min-width: 180px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: none;
+    flex-direction: column;
+    padding: .5rem 0;
+    z-index: 99999999;
+}
+
+.profile-menu:hover .dropdown,
+.profile-menu:focus-within .dropdown {
+    display: flex;
+}
+
+.dropdown::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+}
+
+.dropdown a {
+    padding: .6rem 1rem;
+    text-decoration: none;
+    color: #111;
+    font-size: .9rem;
+}
+
+.dropdown a:hover {
+    padding: .6rem 1rem;
+    background: #f1f5f9;
+}
+
+.dropdown-user {
+    padding: .6rem 1rem;
+    font-size: .85rem;
+    color: #555;
+}
+
+.dropdown hr {
+    margin: .4rem 0;
+    border: none;
+    border-top: 1px solid #eee;
 }
 
 @media (max-width: 1024px) {

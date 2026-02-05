@@ -22,6 +22,7 @@ def login():
     # ✅ LOGIN OK
     session["user_id"] = user.id
     session["username"] = user.username
+    session["role"] = user.role
 
     return jsonify({"success": True}), 200
 
