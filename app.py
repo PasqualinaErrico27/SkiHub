@@ -36,7 +36,7 @@ def index():
     name = request.args.get("name")
     region = request.args.get("region")
     order = request.args.get("order")
-
+#query filtri
     if name:
         query = query.filter(Resort.name.ilike(f"%{name}%"))
 
@@ -47,11 +47,11 @@ def index():
         query = query.order_by(Resort.name)
     elif order == "altitude":
         query = query.order_by(Resort.altitude_max.desc())
-
+#query tutto
     resorts = query.all()
 
     return render_template("index.html", resorts=resorts)
 
 if __name__ == "__main__":
 
-    app.run(port=4000, debug=True)
+    app.run(port=3000, debug=False)

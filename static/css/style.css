@@ -1,7 +1,7 @@
 :root {
     --bg-image: url("/static/img/mountain-bg.png");
     --bg-main: #16DCF7;
-    --bg-soft: rgba(255,255,255,0.18);
+    --bg-soft: rgba(255,255,255,0.75);
     --bg-card: rgba(255,255,255,0.25);
     --border-soft: rgba(0,0,0,0.25);
     --text-main: #0f172a;
@@ -93,8 +93,18 @@ header h1 {
     font-size: 0.9rem;
     opacity: 0.9;
 }
+.login-card{
+    max-width: 50%;
+    max-height: 100%;
+    margin: auto;
+    background: var(--bg-soft);
+    padding: 32px;
+    border-radius: 18px;
+    text-align: center;
+    margin-top: 200px;
+}
 .login-form input {
-    width: 25%;
+    width: 75%;
     padding: 10px 12px;
     border-radius: 10px;
     border: none;
@@ -102,7 +112,7 @@ header h1 {
     background: rgba(255,255,255,0.5);
 }
 .login-form button {
-    width: 10%;
+    width: 75%;
     padding: 12px;
     border-radius: 12px;
     border: none;
@@ -110,11 +120,12 @@ header h1 {
     cursor: pointer;
     background: rgba(15,23,42,0.9);
     color: white;
+    margin-top: 40px;
 }
 
 .filter-group input,
 .filter-group select {
-    width: 50%;
+    width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
     border: none;
@@ -158,10 +169,20 @@ header h1 {
     -webkit-backdrop-filter: blur(12px);
 }
 
+.resort-card:link{
+    text-decoration: none;
+    color: #2563eb;
+}
+.resort-card:visited{
+    text-decoration: none;
+    color: #2563eb;
+}
 
 .resort-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    text-decoration: none;
+    color: #0f172a;
 }
 
 header h1,
@@ -548,6 +569,7 @@ header h1,
     border-radius: 18px;
     background: var(--bg-soft);
     margin-bottom: 40px;
+    margin-top: 40px;
 }
 
 .hero-text h2 {
@@ -622,6 +644,7 @@ header h1,
     padding: 32px;
     border-radius: 18px;
     text-align: center;
+    margin-top: 40px;
 }
 
 .booking-form {
@@ -648,7 +671,6 @@ header h1,
     font-weight: 600;
     cursor: pointer;
 }
-
 /* ================= MODIFICA COMPRENSORIO ================= */
 
 .edit-resort {

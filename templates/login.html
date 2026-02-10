@@ -4,16 +4,18 @@
 
 {% block content %}
     <center>
-    <h2>Login</h2>
-<div class="login-form">
-    <label for="username"></label><input type="text" id="username" placeholder="Username"><br>
-    <label for="password"></label><input type="password" id="password" placeholder="Password"><br>
-    <button id="loginBtn">Login</button>
-    <a href = {{ url_for('register.register') }}><button id="registerBtn">Register</button></a>
-    <p id="error" style="color:red;"></p>
+        <h2>Login</h2>
+        <div class="login-card">
+            <div class="login-form">
 
-</div>
-</center>
+                <label for="username"></label><input type="text" id="username" placeholder="Username"><br>
+                <label for="password"></label><input type="password" id="password" placeholder="Password"><br>
+
+                <button id="loginBtn">Login</button>
+                <p id="error" style="color:red;"></p>
+            </div>
+        </div>
+    </center>
     <script>
         document.getElementById("loginBtn").addEventListener("click", () => {
             fetch("/login", {

@@ -55,7 +55,7 @@
                 {% for p in purchases %}
                     <li class="booking-card">
                         <div>
-                            <strong>{{ p.resort_id.name }}</strong>
+                            <h1>{{ p.resort_id.name }}</h1>
                             <br> {{ p.datefrom.strftime('%d/%m/%Y') }} → {{ p.dateto.strftime('%d/%m/%Y') }}
                         </div>
                         <div class="booking-actions"> <span>€{{ p.amount }}</span>

@@ -57,10 +57,10 @@
                 <a href="{{ url_for('resort.resort_detail', resort_id=resort.id) }}">
                 <div class="resort-card">
                     <h3>{{ resort.name }}</h3>
-                    <p>📍 {{ resort.region }} – {{ resort.country }}</p>
+                    <p>📍 {{ resort.region }}</p>
                     <p>⛰ {{ resort.altitude_min }} – {{ resort.altitude_max }} m</p>
-                    <p>🚡 {{ resort.lifts|length }} impianti</p>
-                    <p>🎿 {{ resort.slopes|length }} piste</p>
+                    <p>🚡 {{ resort.lifts|length }} Impianti</p>
+                    <p>🎿 {{ resort.slopes|length }} Piste</p>
                 </div>
                 </a>
             {% else %}
