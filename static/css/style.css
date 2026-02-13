@@ -509,7 +509,8 @@ header h1,
 }
 
 .booking-card {
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #4c6ef5, #7048e8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
     padding: 20px;
     border-radius: 15px;
     display: flex;
@@ -568,7 +569,8 @@ header h1,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f9f9f9;
+    background: linear-gradient(135deg, #4c6ef5, #7048e8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
     padding: .8rem 1rem;
     border-radius: 10px;
     margin-bottom: .6rem;
