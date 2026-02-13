@@ -55,7 +55,7 @@
                 {% for p in purchases %}
                     <li class="booking-card">
                         <div>
-                            <h1>{{ p.resort_id.name }}</h1>
+                            <h1>{{ p.resort.name }} - {{p.resort.region}}</h1>
                             <br> {{ p.datefrom.strftime('%d/%m/%Y') }} → {{ p.dateto.strftime('%d/%m/%Y') }}
                         </div>
                         <div class="booking-actions"> <span>€{{ p.amount }}</span>
@@ -122,4 +122,5 @@
                 msg.textContent = d.success ? "Profilo aggiornato con successo" : d.error; msg.className = d.success ? "form-msg success" : "form-msg error"; })
             .catch(() => { document.getElementById("profile-msg").textContent = "Errore di connessione"; }); });
     </script>
+
 {% endblock %}
