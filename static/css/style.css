@@ -93,34 +93,78 @@ header h1 {
     font-size: 0.9rem;
     opacity: 0.9;
 }
-.login-card{
-    max-width: 50%;
-    max-height: 100%;
-    margin: auto;
-    background: var(--bg-soft);
-    padding: 32px;
+/* =========================
+   LOGIN / REGISTER CARD (solo questo blocco)
+========================= */
+
+/* card bianca, centrata, fatta bene */
+.login-card,
+.register-card {
+    width: min(460px, 92vw);
+    margin: 40px auto;              /* centrata senza toccare layout globale */
+    background: #ffffff;            /* bianco pieno */
     border-radius: 18px;
-    text-align: center;
-    margin-top: 200px;
+    padding: 34px 30px;
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+    text-align: left;
 }
-.login-form input {
-    width: 75%;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: none;
+
+/* struttura form più pulita */
+.login-form,
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* input full width e moderni */
+.login-form input,
+.register-form input,
+.register-form select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(15,23,42,0.18);
     outline: none;
-    background: rgba(255,255,255,0.5);
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.login-form button {
-    width: 75%;
-    padding: 12px;
+
+.login-form input::placeholder,
+.register-form input::placeholder {
+    color: rgba(15,23,42,0.55);
+}
+
+.login-form input:focus,
+.register-form input:focus,
+.register-form select:focus {
+    border-color: rgba(37,99,235,0.55);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+}
+
+/* bottone coerente e bello */
+.login-form button,
+.register-form button {
+    width: 100%;
+    padding: 12px 14px;
     border-radius: 12px;
     border: none;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    background: rgba(15,23,42,0.9);
-    color: white;
-    margin-top: 40px;
+    background: rgba(15,23,42,0.92);
+    color: #ffffff;
+    margin-top: 3px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.login-form button:hover,
+.register-form button:hover {
+    background: rgba(15,23,42,1);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
 }
 
 .filter-group input,
@@ -362,14 +406,15 @@ header h1,
 ========================= */
 
 .profile {
-    max-width: 1100px;
-    margin: 60px auto;
-    padding: 40px;
+    max-width: 900px;
+    margin: 18px auto;
+    padding: 18px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     border-radius: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     color: #fff;
+    transform: translateY(-15px);
 }
 
 .profile h2 {
@@ -937,14 +982,746 @@ header h1,
     color: #dc2626;
 }
 
-/* ---------- RESPONSIVE ---------- */
+/* =========================
+   AUTH BOX: Login/Registrati con checkbox
+   (aggiungi in fondo al CSS)
+========================= */
 
-@media (max-width: 900px) {
-    .edit-resort form {
-        grid-template-columns: 1fr;
+.auth-wrap{
+    width: min(520px, 92vw);
+    margin: 60px auto;
+    text-align: center;
+}
+
+.auth-wrap h2{
+    margin-bottom: 16px;
+    color: var(--text-main);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* checkbox invisibile */
+.auth-toggle{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* switch */
+.auth-switch{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 auto 14px;
+}
+
+.switch-btn{
+    display: block;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 700;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(0,0,0,0.10);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.switch-btn:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+/* card bianca */
+.auth-card{
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px;
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+    text-align: left;
+}
+
+/* panel base */
+.auth-panel{
+    display: none;
+}
+
+/* default: mostra login */
+.auth-login{ display: block; }
+
+/* quando la checkbox è ON: mostra registrazione */
+.auth-toggle:checked ~ .auth-card .auth-login{ display: none; }
+.auth-toggle:checked ~ .auth-card .auth-register{ display: block; }
+
+/* evidenzia tab attivo */
+.auth-toggle:not(:checked) ~ .auth-switch .switch-login{
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    border-color: rgba(15,23,42,0.92);
+}
+
+.auth-toggle:checked ~ .auth-switch .switch-register{
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    border-color: rgba(15,23,42,0.92);
+}
+
+/* form layout */
+.login-form,
+.register-form{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* input */
+.login-form input,
+.register-form input{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(15,23,42,0.18);
+    outline: none;
+    background: #fff;
+    color: #0f172a;
+    font-size: .95rem;
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+.login-form input:focus,
+.register-form input:focus{
+    border-color: rgba(37,99,235,0.55);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+}
+
+/* button */
+.login-form button,
+.register-form button{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 800;
+    cursor: pointer;
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+/* =========================
+   SOLO PAGINA REGISTRAZIONE
+   (non tocca login né altre pagine)
+========================= */
+
+/* centra solo il contenuto di main nella pagina registrati */
+body > main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 16px;
+}
+
+/* titolo "Registrati" */
+body > main > h2{
+    margin-bottom: 14px;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+
+/* card bianca SOLO per la registrazione (wrapper = .login-form in questa pagina) */
+body > main > .login-form{
+    width: min(560px, 92vw);
+    background: rgba(255,255,255,0.96);
+    border-radius: 20px;
+    padding: 34px 30px;
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+    text-align: left;
+    overflow: hidden;
+    animation: regPop .35s ease-out;
+}
+
+/* neutralizzo il center senza rompere nulla */
+body > main > .login-form center{
+    display: block;
+}
+
+/* tolgo i <br> (spazi brutti) SOLO qui */
+body > main > .login-form br{
+    display: none;
+}
+
+/* input moderni SOLO qui */
+body > main > .login-form input{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(15,23,42,0.18);
+    outline: none;
+    background: #fff;
+    color: #0f172a;
+    font-size: 0.95rem;
+    margin: 0 0 14px 0;
+    transition: box-shadow .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+body > main > .login-form input::placeholder{
+    color: rgba(15,23,42,0.55);
+}
+
+body > main > .login-form input:focus{
+    border-color: rgba(37,99,235,0.6);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+    transform: translateY(-1px);
+}
+
+/* bottone "Registrati" SOLO qui */
+body > main > .login-form button{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 900;
+    cursor: pointer;
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    margin-top: 6px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+body > main > .login-form button:hover{
+    background: rgba(15,23,42,1);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+/* keyframe SOLO per registrazione */
+@keyframes regPop{
+    from{
+        opacity: 0;
+        transform: translateY(10px) scale(.985);
+        filter: blur(2px);
     }
-
-    .edit-sections {
-        grid-template-columns: 1fr;
+    to{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
     }
 }
+/* =========================================================
+   FIX HOME: riempi tutta la pagina (solo se usi <main class="page"> nella home)
+========================================================= */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main.page {
+  flex: 1;
+  display: flex;
+}
+
+main.page > .container {
+  flex: 1;
+  min-height: calc(100vh - 72px);
+  align-items: stretch;
+}
+
+main.page .sidebar,
+main.page .content {
+  height: 100%;
+}
+
+
+/* =========================================================
+   LOGIN: checkbox switch + card bella (solo pagina login)
+   (usa <main class="auth-page">)
+========================================================= */
+main.auth-page{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 16px;
+}
+
+.auth-wrap{
+  width: min(560px, 92vw);
+  text-align: center;
+}
+
+.auth-wrap h2{
+  margin-bottom: 14px;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+
+.auth-toggle{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auth-switch{
+  width: min(520px, 100%);
+  margin: 0 auto 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.switch-btn{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 800;
+  letter-spacing: .2px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.10);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+
+.switch-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+}
+
+.switch-btn::after{
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(15,23,42,0.25);
+  opacity: 0;
+  transform: scaleX(.6);
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+/* evidenzia tab attivo */
+.auth-toggle:not(:checked) ~ .auth-switch .switch-login,
+.auth-toggle:checked ~ .auth-switch .switch-register{
+  background: rgba(15,23,42,0.92);
+  color: #fff;
+  border-color: rgba(15,23,42,0.92);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+.auth-toggle:not(:checked) ~ .auth-switch .switch-login::after,
+.auth-toggle:checked ~ .auth-switch .switch-register::after{
+  background: rgba(255,255,255,0.75);
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.auth-card{
+  width: min(520px, 100%);
+  margin: 0 auto;
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  padding: 34px 30px;
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+  text-align: left;
+  overflow: hidden;
+  animation: popIn .35s ease-out;
+}
+
+.auth-panel{ display: none; }
+.auth-login{ display: block; }
+
+.auth-toggle:checked ~ .auth-card .auth-login{ display: none; }
+.auth-toggle:checked ~ .auth-card .auth-register{ display: block; }
+
+.auth-login,
+.auth-register{
+  animation: panelIn .35s cubic-bezier(.2,.9,.2,1);
+  transform-origin: top;
+}
+
+/* form layout */
+.auth-card .login-form,
+.auth-card .register-form{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* input */
+.auth-card input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.18);
+  outline: none;
+  background: #fff;
+  color: #0f172a;
+  font-size: .95rem;
+  transition: box-shadow .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+.auth-card input::placeholder{
+  color: rgba(15,23,42,0.55);
+}
+
+.auth-card input:focus{
+  border-color: rgba(37,99,235,0.6);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+  transform: translateY(-1px);
+}
+
+/* button */
+.auth-card button{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 900;
+  cursor: pointer;
+  background: rgba(15,23,42,0.92);
+  color: #fff;
+  margin-top: 6px;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.auth-card button:hover{
+  background: rgba(15,23,42,1);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+
+
+body > main > .login-form{
+  width: min(560px, 92vw);
+  margin: 20px auto 60px;
+  background: rgba(255,255,255,0.96);
+  border-radius: 20px;
+  padding: 34px 30px;
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+  text-align: left;
+  overflow: hidden;
+  animation: regPop .35s ease-out;
+}
+
+/* neutralizzo center e br SOLO qui */
+body > main > .login-form center{ display: block; }
+body > main > .login-form br{ display: none; }
+
+/* input registrazione SOLO qui */
+body > main > .login-form input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.18);
+  outline: none;
+  background: #fff;
+  color: #0f172a;
+  font-size: .95rem;
+  margin: 0 0 14px 0;
+  transition: box-shadow .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+body > main > .login-form input:focus{
+  border-color: rgba(37,99,235,0.6);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+  transform: translateY(-1px);
+}
+
+/* bottone registrazione SOLO qui */
+body > main > .login-form button{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 900;
+  cursor: pointer;
+  background: rgba(15,23,42,0.92);
+  color: #fff;
+  margin-top: 6px;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+body > main > .login-form button:hover{
+  background: rgba(15,23,42,1);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+/* =========================
+   KEYFRAMES
+========================= */
+@keyframes popIn{
+  from{ opacity: 0; transform: translateY(10px) scale(.985); filter: blur(2px); }
+  to{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes panelIn{
+  from{ opacity: 0; transform: translateY(8px); filter: blur(2px); }
+  to{ opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes regPop{
+  from{ opacity: 0; transform: translateY(10px) scale(.985); filter: blur(2px); }
+  to{ opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+
+.login-form button:hover,
+.register-form button:hover{
+    background: rgba(15,23,42,1);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+}
+/* =========================
+   AUTH BOX: Login/Registrati con checkbox (più bellino + keyframes)
+   -> aggiungi questo BLOCCO in fondo al tuo style.css
+   -> NON tocca il resto del sito
+========================= */
+
+.auth-wrap{
+    width: min(560px, 92vw);
+    margin: 70px auto;
+    text-align: center;
+}
+
+/* titolo */
+.auth-wrap h2{
+    margin-bottom: 14px;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+
+/* checkbox invisibile */
+.auth-toggle{
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* switch tabs */
+.auth-switch{
+    width: min(520px, 100%);
+    margin: 0 auto 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* tab base */
+.switch-btn{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 800;
+    letter-spacing: .2px;
+
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(0,0,0,0.10);
+
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+
+.switch-btn:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.14);
+}
+
+/* sottolineatura animata */
+.switch-btn::after{
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    width: 26px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(15,23,42,0.25);
+    opacity: .0;
+    transform: scaleX(.6);
+    transition: opacity .15s ease, transform .15s ease;
+}
+
+/* tab attivo */
+.auth-toggle:not(:checked) ~ .auth-switch .switch-login,
+.auth-toggle:checked ~ .auth-switch .switch-register{
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    border-color: rgba(15,23,42,0.92);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+.auth-toggle:not(:checked) ~ .auth-switch .switch-login::after,
+.auth-toggle:checked ~ .auth-switch .switch-register::after{
+    background: rgba(255,255,255,0.75);
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+/* card */
+.auth-card{
+    width: min(520px, 100%);
+    margin: 0 auto;
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    padding: 34px 30px;
+    border: 1px solid rgba(0,0,0,0.10);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+    text-align: left;
+    overflow: hidden;
+    animation: popIn .35s ease-out;
+}
+
+/* pannelli */
+.auth-panel{
+    display: none;
+}
+
+/* default: login visibile */
+.auth-login{
+    display: block;
+}
+
+/* toggle: mostra/hide */
+.auth-toggle:checked ~ .auth-card .auth-login{ display: none; }
+.auth-toggle:checked ~ .auth-card .auth-register{ display: block; }
+
+/* animazioni entrata pannelli */
+.auth-login,
+.auth-register{
+    animation: panelIn .35s cubic-bezier(.2,.9,.2,1);
+    transform-origin: top;
+}
+
+/* form layout */
+.login-form,
+.register-form{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* input */
+.login-form input,
+.register-form input,
+.register-form select{
+    width: 90%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(15,23,42,0.18);
+    outline: none;
+    background: #fff;
+    color: #0f172a;
+    font-size: .95rem;
+    transition: box-shadow .2s ease, border-color .2s ease, transform .15s ease;
+}
+
+.login-form input::placeholder,
+.register-form input::placeholder{
+    color: rgba(15,23,42,0.55);
+}
+
+.login-form input:focus,
+.register-form input:focus,
+.register-form select:focus{
+    border-color: rgba(37,99,235,0.6);
+    box-shadow: 0 0 0 4px rgba(37,99,235,0.18);
+    transform: translateY(-1px);
+}
+
+/* button */
+.login-form button,
+.register-form button{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 900;
+    cursor: pointer;
+    background: rgba(15,23,42,0.92);
+    color: #fff;
+    margin-top: 6px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.login-form button:hover,
+.register-form button:hover{
+    background: rgba(15,23,42,1);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+}
+
+
+/* responsive */
+@media (max-width: 520px){
+    .auth-card{ padding: 26px 18px; }
+    .switch-btn{ padding: 11px 12px; }
+}
+
+/* =========================
+   KEYFRAMES
+========================= */
+
+@keyframes popIn{
+    from{
+        opacity: 0;
+        transform: translateY(10px) scale(.985);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+    }
+}
+
+@keyframes panelIn{
+    from{
+        opacity: 0;
+        transform: translateY(8px);
+        filter: blur(2px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* LOGIN: input = stessa larghezza del bottone */
+.auth-card .login-form,
+.auth-card .register-form {
+  width: 100%;
+}
+
+.auth-card .login-form input,
+.auth-card .register-form input,
+.auth-card .register-form select,
+.auth-card .login-form button,
+.auth-card .register-form button {
+  width: 100% !important;
+  display: block;
+}
+
+/* (opzionale) elimina limiti strani se presenti */
+.auth-card .login-form input,
+.auth-card .login-form button {
+  max-width: none !important;
+}
+

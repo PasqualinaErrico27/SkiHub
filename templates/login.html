@@ -4,33 +4,54 @@
 
 {% block content %}
     <center>
-        <h2>Login</h2>
-        <div class="login-card">
-            <div class="login-form">
+        <main>
 
-                <label for="username"></label><input type="text" id="username" placeholder="Username"><br>
-                <label for="password"></label><input type="password" id="password" placeholder="Password"><br>
+  <div class="auth-wrap">
 
-                <button id="loginBtn">Login</button>
-                <p id="error" style="color:red;"></p>
-            </div>
+    <!-- checkbox toggle -->
+    <input type="checkbox" id="authToggle" class="auth-toggle" />
+      <!-- card -->
+    <div class="auth-card">
+
+      <!-- LOGIN -->
+      <div class="auth-panel auth-login">
+        <div class="login-form">
+          <input type="text" id="username" placeholder="Username">
+          <input type="password" id="password" placeholder="Password">
+          <button id="loginBtn">Login</button>
+          <p id="error" style="color:red;"></p>
         </div>
-    </center>
-    <script>
-        document.getElementById("loginBtn").addEventListener("click", () => {
-            fetch("/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    username: this.username.value,
-                    password: this.password.value
-                })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) location.href = "/";
-                    else error.innerText = data.error;
-                });
-        });
-    </script>
+      </div>
+
+      <!-- REGISTER (metti i tuoi campi reali qui) -->
+      <div class="auth-panel auth-register">
+        <form class="register-form" action="/register" method="post">
+          <input type="text" name="username" placeholder="Username">
+          <input type="email" name="email" placeholder="Email">
+          <input type="password" name="password" placeholder="Password">
+          <button type="submit">Crea account</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) location.href = "/";
+        else error.innerText = data.error;
+      });
+    });
+  </script>
+</main>
 {% endblock %}
